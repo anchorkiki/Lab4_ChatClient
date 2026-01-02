@@ -3,6 +3,9 @@
 
 #include <QWidget>
 #include <QTcpSocket>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonParseError>
 
 namespace Ui {
 class ConnectWindow;

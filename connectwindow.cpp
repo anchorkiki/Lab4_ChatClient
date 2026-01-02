@@ -59,9 +59,27 @@ void ConnectWindow::handle_connection_state(QAbstractSocket::SocketState state)
     switch (state) {
     case QAbstractSocket::ConnectedState: {
         ui->statusDisplay->append("连接成功！即将进入聊天窗口...");
-        ChatWindow *chatWin = new ChatWindow();
-        chatWin->setTcpSocket(tcpSocket); // 先设置Socket，再改父对象
-        tcpSocket->setParent(chatWin);    // 让ChatWindow管理Socket生命周期
+
+        // 获取用户名
+        QString username = ui->usernameEdit->text().trimmed();
+        if (username.isEmpty()) {
+            username = "匿名用户";
+        }
+
+        // 创建聊天窗口，传递用户名
+        ChatWindow *chatWin = new ChatWindow(username);
+        chatWin->setTcpSocket(tcpSocket);
+
+        // 发送连接消息到服务器
+        QJsonObject connectJson;
+        connectJson.insert("type", "connect");
+        connectJson.insert("name", username); // 使用清理后的用户名
+        connectJson.insert("time", QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss"));
+
+        QJsonDocument connectDoc(connectJson);
+        tcpSocket->write(connectDoc.toJson(QJsonDocument::Compact));
+
+        tcpSocket->setParent(chatWin);
         chatWin->show();
         this->hide();
 

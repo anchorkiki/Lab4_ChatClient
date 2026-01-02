@@ -3,14 +3,16 @@
 #include <QKeyEvent>
 #include <QEvent>
 #include <QTimer>
+#include <QDateTime>
 
-ChatWindow::ChatWindow(QWidget *parent)
+ChatWindow::ChatWindow(const QString &username, QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::ChatWindow)  // 初始化UI指针
     , tcpSocket(nullptr)
+    , userName(username)      // 初始化用户名
 {
     ui->setupUi(this);  // 加载UI文件
-    this->setWindowTitle("聊天窗口");
+    this->setWindowTitle(QString("聊天窗口 - %1").arg(userName));
 
     // 初始化UI控件属性（全部通过ui->访问）
     ui->messageDisplay->setReadOnly(true);
@@ -35,6 +37,12 @@ void ChatWindow::setTcpSocket(QTcpSocket *socket)
     connect(tcpSocket, &QTcpSocket::stateChanged, this, &ChatWindow::handle_connection_state);
     // 提示用户
     ui->sendBtn->setEnabled(true); // 连接成功后启用发送按钮
+}
+
+void ChatWindow::setUserName(const QString &name)
+{
+    userName = name;
+    this->setWindowTitle(QString("聊天窗口 - %1").arg(userName));
 }
 
 // 事件过滤器：处理Enter发送消息
@@ -66,8 +74,24 @@ void ChatWindow::on_sendBtn_clicked()
     QString message = ui->textEdit->toPlainText().trimmed();
     if (message.isEmpty()) return;
 
-    tcpSocket->write(message.toUtf8());
-    ui->messageDisplay->append(QString("我：%1").arg(message));
+    // 创建 JSON 消息
+    QJsonObject jsonObj;
+    jsonObj.insert("type", "message");
+    jsonObj.insert("content", message);
+    jsonObj.insert("sender", userName); // 使用成员变量
+
+    QJsonDocument jsonDoc(jsonObj);
+    QByteArray jsonData = jsonDoc.toJson(QJsonDocument::Compact);
+
+    tcpSocket->write(jsonData);
+
+    // 显示自己发送的消息
+    QJsonObject displayJson;
+    displayJson.insert("type", "self_message");
+    displayJson.insert("content", message);
+    displayJson.insert("time", QDateTime::currentDateTime().toString("HH:mm:ss"));
+
+    displayMessage(displayJson); // 创建一个专门的显示函数
     ui->textEdit->clear();
 }
 
@@ -75,8 +99,56 @@ void ChatWindow::on_sendBtn_clicked()
 void ChatWindow::read_server_message()
 {
     QByteArray data = tcpSocket->readAll();
-    QString message = QString::fromUtf8(data);
-    ui->messageDisplay->append(message);
+
+    // 尝试解析 JSON
+    QJsonParseError jsonError;
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(data, &jsonError);
+
+    if (jsonError.error == QJsonParseError::NoError) {
+        QJsonObject jsonObj = jsonDoc.object();
+        displayMessage(jsonObj);
+    } else {
+        // 如果不是 JSON，可能是旧服务器，按普通文本显示
+        QString message = QString::fromUtf8(data);
+        ui->messageDisplay->append(message);
+    }
+}
+
+// 专门处理 JSON 消息的显示函数
+void ChatWindow::displayMessage(const QJsonObject &jsonObj)
+{
+    QString type = jsonObj.value("type").toString();
+    QString content = jsonObj.value("content").toString();
+    QString sender = jsonObj.value("sender").toString();
+    QString time = jsonObj.value("time").toString();
+
+    if (type == "broadcast") {
+        // 显示其他用户的消息
+        QString displayText = QString("[%1] %2: %3")
+                                  .arg(time)
+                                  .arg(sender)
+                                  .arg(content);
+        ui->messageDisplay->append(displayText);
+    } else if (type == "self_message") {
+        // 显示自己发送的消息（本地回显）
+        QString displayText = QString("[%1] 我: %2")
+                                  .arg(time)
+                                  .arg(content);
+        ui->messageDisplay->append(displayText);
+    } else if (type == "user_join") {
+        // 显示用户加入通知
+        QString username = jsonObj.value("username").toString();
+        QString joinTime = jsonObj.value("time").toString();
+        ui->messageDisplay->append(QString("[%1] 系统: %2 加入了聊天").arg(joinTime).arg(username));
+    } else if (type == "user_leave") {
+        // 显示用户离开通知
+        QString username = jsonObj.value("username").toString();
+        QString leaveTime = jsonObj.value("time").toString();
+        ui->messageDisplay->append(QString("[%1] 系统: %2 离开了聊天").arg(leaveTime).arg(username));
+    } else if (type == "system") {
+        // 显示系统消息
+        ui->messageDisplay->append(QString("[系统] %1").arg(content));
+    }
 }
 
 // 处理连接状态变化
