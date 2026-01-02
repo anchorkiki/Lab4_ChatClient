@@ -6,6 +6,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonParseError>
+#include <QListWidgetItem>
 
 namespace Ui {
 class ChatWindow;
@@ -30,9 +31,13 @@ private slots:
     void handle_connection_state(QAbstractSocket::SocketState state);
 
 private:
+    void updateOnlineUserList(const QStringList &users);  // 更新用户列表
+
+private:
     Ui::ChatWindow *ui;  // 仅保留UI指针
     QTcpSocket *tcpSocket;
     QString userName;    // 添加用户名成员变量
+    QStringList onlineUsers;  // 存储在线用户列表
 };
 
 #endif // CHATWINDOW_H

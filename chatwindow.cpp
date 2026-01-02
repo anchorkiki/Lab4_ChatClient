@@ -4,6 +4,7 @@
 #include <QEvent>
 #include <QTimer>
 #include <QDateTime>
+#include <QJsonArray>
 
 ChatWindow::ChatWindow(const QString &username, QWidget *parent)
     : QWidget(parent)
@@ -140,14 +141,42 @@ void ChatWindow::displayMessage(const QJsonObject &jsonObj)
         QString username = jsonObj.value("username").toString();
         QString joinTime = jsonObj.value("time").toString();
         ui->messageDisplay->append(QString("[%1] 系统: %2 加入了聊天").arg(joinTime).arg(username));
+
+        // 更新用户列表（如果消息中包含用户列表）
+        if (jsonObj.contains("userList")) {
+            QJsonArray userArray = jsonObj.value("userList").toArray();
+            QStringList userList;
+            for (const QJsonValue &value : userArray) {
+                userList.append(value.toString());
+            }
+            updateOnlineUserList(userList);
+        }
     } else if (type == "user_leave") {
         // 显示用户离开通知
         QString username = jsonObj.value("username").toString();
         QString leaveTime = jsonObj.value("time").toString();
         ui->messageDisplay->append(QString("[%1] 系统: %2 离开了聊天").arg(leaveTime).arg(username));
+
+        // 更新用户列表（如果消息中包含用户列表）
+        if (jsonObj.contains("userList")) {
+            QJsonArray userArray = jsonObj.value("userList").toArray();
+            QStringList userList;
+            for (const QJsonValue &value : userArray) {
+                userList.append(value.toString());
+            }
+            updateOnlineUserList(userList);
+        }
     } else if (type == "system") {
         // 显示系统消息
         ui->messageDisplay->append(QString("[系统] %1").arg(content));
+    } else if (type == "user_list_update") {
+        // 新增：处理用户列表更新消息
+        QJsonArray userArray = jsonObj.value("userList").toArray();
+        QStringList userList;
+        for (const QJsonValue &value : userArray) {
+            userList.append(value.toString());
+        }
+        updateOnlineUserList(userList);
     }
 }
 
@@ -157,5 +186,27 @@ void ChatWindow::handle_connection_state(QAbstractSocket::SocketState state)
     if (state == QAbstractSocket::UnconnectedState) {
         ui->messageDisplay->append("与服务器断开连接，即将关闭聊天窗口...");
         QTimer::singleShot(1500, this, &ChatWindow::close);
+    }
+}
+
+// 更新在线用户列表
+void ChatWindow::updateOnlineUserList(const QStringList &users)
+{
+    onlineUsers = users;  // 保存用户列表
+
+    ui->onlineUsersList->clear();  // 清空现有列表
+
+    // 将每个用户添加到列表中
+    for (const QString &user : users) {
+        QListWidgetItem *item = new QListWidgetItem(user);
+
+        // 如果是自己，添加特殊标记
+        if (user == userName) {
+            item->setText(user + " (我)");
+            item->setForeground(Qt::blue);  // 设置为蓝色显示
+            item->setFont(QFont("Arial", 10, QFont::Bold));  // 加粗
+        }
+
+        ui->onlineUsersList->addItem(item);
     }
 }
