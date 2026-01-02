@@ -204,7 +204,7 @@ void ChatWindow::updateOnlineUserList(const QStringList &users)
         if (user == userName) {
             item->setText(user + " (我)");
             item->setForeground(Qt::blue);  // 设置为蓝色显示
-            item->setFont(QFont("Arial", 10, QFont::Bold));  // 加粗
+            item->setFont(QFont("Arial", 10, QFont::Bold));
         }
 
         ui->onlineUsersList->addItem(item);

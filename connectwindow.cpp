@@ -47,7 +47,7 @@ void ConnectWindow::on_connectBtn_clicked()
         return;
     }
 
-    // 连接服务器
+    // 连接服务器  .
     tcpSocket->connectToHost(ip, port);
     ui->statusDisplay->append(QString("正在连接 %1:%2...").arg(ip).arg(port));
     ui->connectBtn->setText("取消连接"); // 优化：连接中显示「取消连接」

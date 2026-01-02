@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>489</width>
-    <height>380</height>
+    <height>408</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>10</y>
+     <y>40</y>
      <width>371</width>
      <height>281</height>
     </rect>
@@ -27,7 +27,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>300</y>
+     <y>330</y>
      <width>471</width>
      <height>71</height>
     </rect>
@@ -37,7 +37,7 @@
    <property name="geometry">
     <rect>
      <x>400</x>
-     <y>340</y>
+     <y>370</y>
      <width>75</width>
      <height>24</height>
     </rect>
@@ -50,7 +50,7 @@
    <property name="geometry">
     <rect>
      <x>390</x>
-     <y>10</y>
+     <y>40</y>
      <width>91</width>
      <height>281</height>
     </rect>
@@ -59,10 +59,33 @@
     <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
    </property>
   </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>0</y>
+     <width>451</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>22</pointsize>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>蔡俊杰的聊天室</string>
+   </property>
+   <property name="margin">
+    <number>0</number>
+   </property>
+  </widget>
   <zorder>onlineUsersList</zorder>
   <zorder>messageDisplay</zorder>
   <zorder>textEdit</zorder>
   <zorder>sendBtn</zorder>
+  <zorder>label</zorder>
  </widget>
  <resources/>
  <connections/>
