@@ -1,0 +1,206 @@
+/* 全局样式 */
+* {
+    font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+}
+
+/* 主窗口背景 */
+QWidget {
+    background-color: #f0f2f5;
+    color: #2c3e50;
+}
+
+/* 连接窗口特定样式 */
+ConnectWindow {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                               stop:0 #6a11cb, stop:1 #2575fc);
+    border-radius: 12px;
+}
+
+ConnectWindow QLabel {
+    color: black;
+    font-weight: bold;
+    background-color: transparent;  /* 设置为透明背景 */
+    border: none;                   /* 确保没有边框 */
+}
+
+ConnectWindow QWidget#widget {
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 10px;
+    color: #666666;
+}
+
+ConnectWindow QGridLayout#gridLayout {
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 10px;
+    color: #666666;
+}
+
+ConnectWindow QLineEdit {
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 10px;
+    color: #2c3e50;
+    selection-background-color: #6a11cb;
+}
+
+ConnectWindow QLineEdit:focus {
+    border: 2px solid rgba(106, 17, 203, 0.8);
+    background-color: white;
+}
+
+ConnectWindow QTextEdit#statusDisplay {
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 10px;
+    color: #666666;
+}
+
+ConnectWindow QPushButton#connectBtn {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                               stop:0 #36d1dc, stop:1 #5b86e5);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+ConnectWindow QPushButton#connectBtn:hover {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                               stop:0 #30c4d0, stop:1 #4a7bdf);
+}
+
+ConnectWindow QPushButton#connectBtn:pressed {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                               stop:0 #2ab7c3, stop:1 #3a70d9);
+}
+
+ConnectWindow QPushButton#connectBtn:disabled {
+    background: #bdc3c7;
+    color: #7f8c8d;
+}
+
+/* 聊天窗口样式 */
+ChatWindow {
+    background-color: #f0f2f5;
+    border-radius: 12px;
+}
+
+/* 聊天室标题 */
+ChatWindow QLabel#label {
+    color: #ffffff;
+    font-weight: bold;
+    qproperty-alignment: AlignCenter;
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                               stop:0 #36d1dc, stop:1 #5b86e5);
+    border-radius: 12px;
+}
+
+/* 消息显示区域 */
+ChatWindow QTextEdit#messageDisplay {
+    background-color: white;
+    border: 2px solid #dfe6e9;
+    border-radius: 12px;
+    color: #2c3e50;
+    selection-background-color: #36d1dc;
+}
+
+/* 消息输入区域 */
+ChatWindow QTextEdit#textEdit {
+    background-color: white;
+    border: 2px solid #dfe6e9;
+    border-radius: 12px;
+    color: #2c3e50;
+}
+
+ChatWindow QTextEdit#textEdit:focus {
+    border: 2px solid #36d1dc;
+}
+
+/* 在线用户列表 */
+ChatWindow QListWidget#onlineUsersList {
+    background-color: white;
+    border: 2px solid #dfe6e9;
+    border-radius: 12px;
+    outline: none;
+}
+
+ChatWindow QListWidget#onlineUsersList::item {
+    border-radius: 8px;
+}
+
+ChatWindow QListWidget#onlineUsersList::item:hover {
+    background-color: #e8f4fc;
+}
+
+ChatWindow QListWidget#onlineUsersList::item:selected {
+    background-color: #d4edff;
+    color: #2980b9;
+}
+
+/* 发送按钮 */
+ChatWindow QPushButton#sendBtn {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                               stop:0 #36d1dc, stop:1 #5b86e5);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+ChatWindow QPushButton#sendBtn:hover {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                               stop:0 #30c4d0, stop:1 #4a7bdf);
+}
+
+ChatWindow QPushButton#sendBtn:pressed {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                               stop:0 #2ab7c3, stop:1 #3a70d9);
+}
+
+ChatWindow QPushButton#sendBtn:disabled {
+    background: #bdc3c7;
+    color: #7f8c8d;
+}
+
+/* 滚动条样式 */
+QScrollBar:vertical {
+    background: #ecf0f1;
+    width: 12px;
+    border-radius: 6px;
+}
+
+QScrollBar::handle:vertical {
+    background: #95a5a6;
+    border-radius: 6px;
+    min-height: 20px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: #7f8c8d;
+}
+
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    height: 0px;
+}
+
+QScrollBar:horizontal {
+    background: #ecf0f1;
+    height: 12px;
+    border-radius: 6px;
+}
+
+QScrollBar::handle:horizontal {
+    background: #95a5a6;
+    border-radius: 6px;
+    min-width: 20px;
+}
+
+QScrollBar::handle:horizontal:hover {
+    background: #7f8c8d;
+}
+
+QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
+    width: 0px;
+}
